@@ -4,18 +4,19 @@ import urllib.robotparser
 from urllib.parse import urlparse
 
 def print_banner():
+    # Large letters spelling out A D V W E B Y X C R Y L E R
     banner = r"""
- __      __      __   ______   ____    __     __ __   __   ______  _____   __     __  _       ______  _____   
- \ \    /  \    / /  |  ____| |  _ \   \ \   / / \ \ / /  / ____/ |  __ \  \ \   / / | |     |  ____||  __ \  
-  \ \  / /\ \  / /   | |__    | |_) |   \ \_/ /   \ V /  | |      | |__) |  \ \_/ /  | |     | |__   | |__) | 
-   \ \/ /  \ \/ /    |  __|   |  _ <     \   /     > <   | |      |  _  /    \   /   | |     |  __|  |  _  /  
-    \  /    \  /     | |____  | |_) |     | |     / . \  | |____  | | \ \     | |    | |____ | |____ | | \ \  
-     \/      \/      |______| |____/      |_|    /_/ \_\  \____/  |_|  \_\    |_|    |______||______||_|  \_\ 
+     _      _____   __      __ __      __      __   ______   ____    __     __ __   __   ______  _____   __     __  _       ______  _____   
+    / \    |  __ \  \ \    / / \ \    /  \    / /  |  ____| |  _ \   \ \   / / \ \ / /  / ____/ |  __ \  \ \   / / | |     |  ____||  __ \  
+   / _ \   | |  | |  \ \  / /   \ \  / /\ \  / /   | |__    | |_) |   \ \_/ /   \ V /  | |      | |__) |  \ \_/ /  | |     | |__   | |__) | 
+  / ___ \  | |  | |   \ \/ /     \ \/ /  \ \/ /    |  __|   |  _ <     \   /     > <   | |      |  _  /    \   /   | |     |  __|  |  _  /  
+ / /   \ \ | |__| |    \  /       \  /    \  /     | |____  | |_) |     | |     / . \  | |____  | | \ \     | |    | |____ | |____ | | \ \  
+/_/     \_\|_____/      \/         \/      \/      |______| |____/      |_|    /_/ \_\  \____/  |_|  \_\    |_|    |______||______||_|  \_\ 
     """
     print(banner)
-    print("=" * 110)
-    print(" " * 41 + "Made by Anwesh123-coder")
-    print("=" * 110 + "\n")
+    print("=" * 140)
+    print(" " * 56 + "Made by Anwesh123-coder")
+    print("=" * 140 + "\n")
 
 def get_base_url(url):
     parsed = urlparse(url)
@@ -26,18 +27,15 @@ def detect_backend_and_database(headers, html_content):
     print("       DETECTED BACKEND & TECH STACK       ")
     print("=" * 45)
     
-    # 1. Analyze Server Header Tokens
     server = headers.get("Server", "Unknown Server")
     powered_by = headers.get("X-Powered-By", "Hidden/Not Disclosed")
     
     print(f"[+] Primary Web Server:  {server}")
     print(f"[+] Backend Framework:   {powered_by}")
     
-    # 2. Check for fingerprint clues in HTTP Headers
     backend_guess = "Unknown Logic Engine"
     database_guess = "Standard Relational SQL or Hidden Backend Instance"
     
-    # Check framework headers
     headers_str = str(headers).lower()
     if "phpsessid" in headers_str or "php" in powered_by.lower():
         backend_guess = "PHP (Hypertext Preprocessor)"
@@ -52,11 +50,9 @@ def detect_backend_and_database(headers, html_content):
         backend_guess = "Microsoft .NET Backend"
         database_guess = "Typically paired with Microsoft SQL Server"
         
-    # 3. Analyze HTML content for CMS / structural fingerprints
     soup = BeautifulSoup(html_content, 'html.parser')
     html_str = html_content.lower()
     
-    # Look for meta generator tags
     meta_generator = soup.find("meta", attrs={"name": "generator"})
     if meta_generator:
         cms = meta_generator.get("content", "")
@@ -122,10 +118,7 @@ def crawl_website():
     try:
         response = requests.get(url, headers=headers, timeout=10)
         if response.status_code == 200:
-            # Run the Tech Stack Fingerprint Scanner
             detect_backend_and_database(response.headers, response.text)
-            
-            # Run compliance scanners
             check_robots_txt(base_url)
             parse_sitemap(base_url)
         else:
